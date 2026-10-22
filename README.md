@@ -31,7 +31,7 @@ Consultas preparadas (anti SQL injection), escape de salida con `htmlspecialchar
 Si ya tienes la base de datos creada, ejecuta una vez `database_upgrade.sql` en phpMyAdmin para añadir roles y multas, `database_upgrade_price.sql` para agregar el precio, `database_upgrade_editoriales.sql` para crear el catálogo editorial y `database_upgrade_escritores.sql` para crear escritores y relacionarlos con sus libros actuales. Los precios existentes se inicializan en cero: actualízalos desde **Libros** para obtener el valor real del inventario. Los libros actuales quedan sin editorial hasta que se la asignes. En una instalación nueva, importa `database.sql`. El admin crea cuentas de bibliotecario y otros admins desde **Usuarios**. La multa inicial es de 5 por día vencido y se cambia en `config/db.php`.
 
 ## Exportar
-En Libros, Socios y Préstamos puedes descargar como CSV todos los resultados que coincidan con la búsqueda actual. La opción de PDF abre una vista de impresión de esos resultados; elige **Guardar como PDF** en el diálogo de impresión del navegador.
+En Libros, Socios y Préstamos puedes descargar como CSV todos los resultados que coincidan con la búsqueda actual. En Editoriales y Escritores puedes exportar el catálogo con país y cantidad de libros asociados. La opción de PDF abre una vista de impresión; elige **Guardar como PDF** en el diálogo de impresión del navegador.
 
 ## API
 Los endpoints son de solo lectura y requieren HTTP Basic con el correo y contraseña de un usuario de la aplicación. En producción, publícala únicamente detrás de HTTPS.
@@ -50,7 +50,7 @@ config/db.php        credenciales
 includes/init.php    conexión PDO, sesión, helpers y CSRF
 includes/layout.php  cabecera y pie compartidos
 index.php  libros.php  socios.php  prestamos.php  login.php  logout.php
-usuarios.php  editoriales.php  escritores.php  exportar.php  api/index.php
+usuarios.php  editoriales.php  escritores.php  reportes.php  exportar.php  api/index.php
 database.sql  database_upgrade.sql  database_upgrade_price.sql
 database_upgrade_editoriales.sql  database_upgrade_escritores.sql
 assets/css  assets/js

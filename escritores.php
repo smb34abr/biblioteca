@@ -57,7 +57,7 @@ head('Escritores'); ?>
     <div class="actions"><button class="btn"><?= $edit ? 'Guardar cambios' : 'Agregar escritor' ?></button><?php if ($edit): ?><a href="escritores.php">Cancelar</a><?php endif; ?></div>
   </form>
 </section>
-<div class="section-heading"><div><p class="eyebrow">REGISTROS</p><h2>Escritores registrados</h2></div><span class="muted"><?= count($escritores) ?> escritores</span></div>
+<div class="report-toolbar editorial-report-toolbar"><span><?= number_format(count($escritores)) ?> escritores encontrados</span><div class="report-actions"><a class="btn alt" href="exportar.php?tipo=escritores&amp;formato=csv">Descargar CSV</a><a class="btn" href="exportar.php?tipo=escritores&amp;formato=pdf" target="_blank" rel="noopener">Imprimir / Guardar como PDF</a></div></div>
 <?php if (!$escritores): ?><p class="muted">Aún no hay escritores registrados.</p><?php else: ?>
 <div class="wrap"><table><thead><tr><th>ESCRITOR</th><th>PAÍS</th><th>LIBROS ASOCIADOS</th><th></th></tr></thead><tbody>
 <?php foreach ($escritores as $escritor): ?><tr><td><?= e($escritor['nombre']) ?></td><td><?= e($escritor['pais'] ?: '—') ?></td><td><?= (int)$escritor['libros'] ?></td><td class="row"><a href="?edit=<?= (int)$escritor['id'] ?>">Editar</a><form method="post"><input type="hidden" name="t" value="<?= csrf() ?>"><input type="hidden" name="id" value="<?= (int)$escritor['id'] ?>"><button class="link danger" name="eliminar" value="1" data-confirm="¿Eliminar a <?= e($escritor['nombre']) ?>? Se quitará la relación con sus libros.">Eliminar</button></form></td></tr><?php endforeach; ?>

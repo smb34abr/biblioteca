@@ -5,8 +5,11 @@ $tipo = $_GET['tipo'] ?? '';
 $formato = $_GET['formato'] ?? 'csv';
 $busqueda = trim($_GET['q'] ?? '');
 $busquedaLike = '%' . $busqueda . '%';
+if (in_array($tipo, ['editoriales', 'escritores'], true)) require_admin();
 $consultas = [
   'libros' => ['Libros', ['Título', 'Escritores', 'Editorial', 'ISBN', 'Categoría', 'Año', 'Precio por ejemplar (MXN)', 'Disponibles', 'Ejemplares'], 'SELECT l.titulo,COALESCE((SELECT GROUP_CONCAT(w.nombre ORDER BY w.nombre SEPARATOR ", ") FROM libro_escritor le JOIN escritores w ON w.id=le.escritor_id WHERE le.libro_id=l.id),l.autor),e.nombre,l.isbn,l.categoria,l.anio,l.precio,l.disponibles,l.ejemplares FROM libros l LEFT JOIN editoriales e ON e.id=l.editorial_id WHERE l.titulo LIKE ? OR l.autor LIKE ? OR l.isbn LIKE ? OR e.nombre LIKE ? OR EXISTS (SELECT 1 FROM libro_escritor le JOIN escritores w ON w.id=le.escritor_id WHERE le.libro_id=l.id AND w.nombre LIKE ?) ORDER BY l.titulo', [$busquedaLike, $busquedaLike, $busquedaLike, $busquedaLike, $busquedaLike]],
+  'editoriales' => ['Editoriales', ['Editorial', 'País', 'Libros asociados'], 'SELECT e.nombre,e.pais,COUNT(l.id) FROM editoriales e LEFT JOIN libros l ON l.editorial_id=e.id GROUP BY e.id,e.nombre,e.pais ORDER BY e.nombre', []],
+  'escritores' => ['Escritores', ['Escritor', 'País', 'Libros asociados'], 'SELECT w.nombre,w.pais,COUNT(le.libro_id) FROM escritores w LEFT JOIN libro_escritor le ON le.escritor_id=w.id GROUP BY w.id,w.nombre,w.pais ORDER BY w.nombre', []],
   'socios' => ['Socios', ['Nombre', 'Correo', 'Teléfono', 'Creado'], 'SELECT nombre,email,telefono,creado FROM socios WHERE nombre LIKE ? OR email LIKE ? OR telefono LIKE ? ORDER BY nombre', [$busquedaLike, $busquedaLike, $busquedaLike]],
   'prestamos' => ['Préstamos', ['Libro', 'Socio', 'Préstamo', 'Límite', 'Devolución', 'Multa'], 'SELECT l.titulo,s.nombre,p.fecha_prestamo,p.fecha_limite,p.fecha_devolucion,p.multa FROM prestamos p JOIN libros l ON l.id=p.libro_id JOIN socios s ON s.id=p.socio_id WHERE l.titulo LIKE ? OR s.nombre LIKE ? ORDER BY p.id DESC', [$busquedaLike, $busquedaLike]],
 ];
