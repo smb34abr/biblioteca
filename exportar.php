@@ -6,7 +6,7 @@ $formato = $_GET['formato'] ?? 'csv';
 $busqueda = trim($_GET['q'] ?? '');
 $busquedaLike = '%' . $busqueda . '%';
 $consultas = [
-  'libros' => ['Libros', ['Título', 'Autor', 'ISBN', 'Categoría', 'Año', 'Precio por ejemplar (MXN)', 'Disponibles', 'Ejemplares'], 'SELECT titulo,autor,isbn,categoria,anio,precio,disponibles,ejemplares FROM libros WHERE titulo LIKE ? OR autor LIKE ? OR isbn LIKE ? ORDER BY titulo', [$busquedaLike, $busquedaLike, $busquedaLike]],
+  'libros' => ['Libros', ['Título', 'Autor', 'Editorial', 'ISBN', 'Categoría', 'Año', 'Precio por ejemplar (MXN)', 'Disponibles', 'Ejemplares'], 'SELECT l.titulo,l.autor,e.nombre,l.isbn,l.categoria,l.anio,l.precio,l.disponibles,l.ejemplares FROM libros l LEFT JOIN editoriales e ON e.id=l.editorial_id WHERE l.titulo LIKE ? OR l.autor LIKE ? OR l.isbn LIKE ? OR e.nombre LIKE ? ORDER BY l.titulo', [$busquedaLike, $busquedaLike, $busquedaLike, $busquedaLike]],
   'socios' => ['Socios', ['Nombre', 'Correo', 'Teléfono', 'Creado'], 'SELECT nombre,email,telefono,creado FROM socios WHERE nombre LIKE ? OR email LIKE ? OR telefono LIKE ? ORDER BY nombre', [$busquedaLike, $busquedaLike, $busquedaLike]],
   'prestamos' => ['Préstamos', ['Libro', 'Socio', 'Préstamo', 'Límite', 'Devolución', 'Multa'], 'SELECT l.titulo,s.nombre,p.fecha_prestamo,p.fecha_limite,p.fecha_devolucion,p.multa FROM prestamos p JOIN libros l ON l.id=p.libro_id JOIN socios s ON s.id=p.socio_id WHERE l.titulo LIKE ? OR s.nombre LIKE ? ORDER BY p.id DESC', [$busquedaLike, $busquedaLike]],
 ];

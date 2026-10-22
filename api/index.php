@@ -38,7 +38,7 @@ $porPagina = min(100, max(1, (int)($_GET['limite'] ?? 20)));
 $offset = ($pagina - 1) * $porPagina;
 $busqueda = '%' . trim($_GET['q'] ?? '') . '%';
 $recursos = [
-  'libros' => ['SELECT COUNT(*) FROM libros WHERE titulo LIKE ? OR autor LIKE ? OR isbn LIKE ?', 'SELECT id,titulo,autor,isbn,categoria,anio,precio,ejemplares,disponibles FROM libros WHERE titulo LIKE ? OR autor LIKE ? OR isbn LIKE ? ORDER BY titulo LIMIT ? OFFSET ?', [$busqueda, $busqueda, $busqueda]],
+  'libros' => ['SELECT COUNT(*) FROM libros l LEFT JOIN editoriales e ON e.id=l.editorial_id WHERE l.titulo LIKE ? OR l.autor LIKE ? OR l.isbn LIKE ? OR e.nombre LIKE ?', 'SELECT l.id,l.titulo,l.autor,l.isbn,l.categoria,l.anio,l.precio,l.editorial_id,e.nombre AS editorial,l.ejemplares,l.disponibles FROM libros l LEFT JOIN editoriales e ON e.id=l.editorial_id WHERE l.titulo LIKE ? OR l.autor LIKE ? OR l.isbn LIKE ? OR e.nombre LIKE ? ORDER BY l.titulo LIMIT ? OFFSET ?', [$busqueda, $busqueda, $busqueda, $busqueda]],
   'socios' => ['SELECT COUNT(*) FROM socios WHERE nombre LIKE ? OR email LIKE ? OR telefono LIKE ?', 'SELECT id,nombre,email,telefono,creado FROM socios WHERE nombre LIKE ? OR email LIKE ? OR telefono LIKE ? ORDER BY nombre LIMIT ? OFFSET ?', [$busqueda, $busqueda, $busqueda]],
   'prestamos' => ['SELECT COUNT(*) FROM prestamos p JOIN libros l ON l.id=p.libro_id JOIN socios s ON s.id=p.socio_id WHERE l.titulo LIKE ? OR s.nombre LIKE ?', 'SELECT p.id,p.libro_id,p.socio_id,l.titulo AS libro,s.nombre AS socio,p.fecha_prestamo,p.fecha_limite,p.fecha_devolucion,p.multa FROM prestamos p JOIN libros l ON l.id=p.libro_id JOIN socios s ON s.id=p.socio_id WHERE l.titulo LIKE ? OR s.nombre LIKE ? ORDER BY p.id DESC LIMIT ? OFFSET ?', [$busqueda, $busqueda]],
 ];

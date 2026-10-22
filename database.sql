@@ -9,6 +9,14 @@ CREATE TABLE usuarios (
   rol ENUM('admin','bibliotecario') NOT NULL DEFAULT 'bibliotecario'
 ) ENGINE=InnoDB;
 
+CREATE TABLE editoriales (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  nombre VARCHAR(120) NOT NULL UNIQUE,
+  pais VARCHAR(80),
+  creado TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX (nombre)
+) ENGINE=InnoDB;
+
 CREATE TABLE libros (
   id INT AUTO_INCREMENT PRIMARY KEY,
   titulo VARCHAR(150) NOT NULL,
@@ -17,8 +25,10 @@ CREATE TABLE libros (
   categoria VARCHAR(60),
   anio SMALLINT,
   precio DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  editorial_id INT NULL,
   ejemplares INT NOT NULL DEFAULT 1,
   disponibles INT NOT NULL DEFAULT 1,
+  FOREIGN KEY (editorial_id) REFERENCES editoriales(id) ON DELETE SET NULL,
   INDEX (titulo), INDEX (autor)
 ) ENGINE=InnoDB;
 
