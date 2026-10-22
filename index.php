@@ -10,15 +10,22 @@ $stats = [
 ];
 $recientes = $pdo->query('SELECT p.*, l.titulo, s.nombre FROM prestamos p JOIN libros l ON l.id=p.libro_id JOIN socios s ON s.id=p.socio_id ORDER BY p.id DESC LIMIT 6')->fetchAll();
 head('Inicio'); ?>
-<section class="ledger">
-  <?php foreach ($stats as $k => $v): ?><div class="<?= $k === 'Vencidos' && $v ? 'warn' : '' ?>"><b><?= $v ?></b><span><?= e($k) ?></span></div><?php endforeach; ?>
+<section class="dashboard-intro"><div><p>RESUMEN GENERAL</p><h2>Tu biblioteca, de un vistazo</h2><span>Indicadores actuales del catálogo y la circulación.</span></div><div class="dashboard-actions"><a class="btn alt" href="libros.php">Ver catálogo</a><a class="btn" href="prestamos.php">Nuevo préstamo</a></div></section>
+<section class="dashboard-metrics" aria-label="Indicadores de la biblioteca">
+  <?php $metricIcons = ['Títulos'=>'libros','Ejemplares libres'=>'inicio','Socios'=>'socios','Préstamos activos'=>'prestamos','Vencidos'=>'prestamos']; foreach ($stats as $k => $v): ?>
+    <article class="metric-card<?= $k === 'Vencidos' && $v ? ' metric-alert' : '' ?>">
+      <div class="metric-top"><span><?= e($k) ?></span><span class="metric-icon"><?= nav_icon($metricIcons[$k]) ?></span></div>
+      <strong><?= number_format($v) ?></strong>
+      <small><?= $k === 'Vencidos' ? ($v ? 'Requieren seguimiento' : 'Sin retrasos pendientes') : 'Total registrado' ?></small>
+    </article>
+  <?php endforeach; ?>
 </section>
-<h2>Últimos préstamos</h2>
+<section class="activity-section"><div class="section-heading"><div><p class="eyebrow">CIRCULACIÓN</p><h2>Últimos préstamos</h2></div><a href="prestamos.php">Ver todos <span aria-hidden="true">→</span></a></div>
 <?php if (!$recientes): ?><p class="muted">Aún no hay préstamos. <a href="prestamos.php">Registra el primero</a>.</p>
 <?php else: ?>
 <div class="wrap"><table>
-<tr><th>Libro</th><th>Socio</th><th>Vence</th><th>Estado</th></tr>
+<thead><tr><th>LIBRO</th><th>SOCIO</th><th>FECHA LÍMITE</th><th>ESTADO</th></tr></thead><tbody>
 <?php foreach ($recientes as $p): $est = $p['fecha_devolucion'] ? ['ok','Devuelto'] : ($p['fecha_limite'] < date('Y-m-d') ? ['bad','Vencido'] : ['act','Activo']); ?>
 <tr><td><?= e($p['titulo']) ?></td><td><?= e($p['nombre']) ?></td><td><?= e($p['fecha_limite']) ?></td><td><span class="tag <?= $est[0] ?>"><?= $est[1] ?></span></td></tr>
-<?php endforeach; ?></table></div>
-<?php endif; foot();
+<?php endforeach; ?></tbody></table></div>
+<?php endif; ?></section><?php foot();

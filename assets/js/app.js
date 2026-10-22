@@ -12,3 +12,18 @@ document.querySelectorAll("[data-filter]").forEach(inp => {
     });
   });
 });
+
+const shell = document.body;
+const menuToggle = document.querySelector("[data-menu-toggle]");
+const menuClose = document.querySelector("[data-menu-close]");
+if (menuToggle) {
+  const setMenuOpen = open => {
+    shell.classList.toggle("menu-open", open);
+    menuToggle.setAttribute("aria-expanded", String(open));
+  };
+  menuToggle.addEventListener("click", () => setMenuOpen(!shell.classList.contains("menu-open")));
+  menuClose?.addEventListener("click", () => setMenuOpen(false));
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") setMenuOpen(false);
+  });
+}
