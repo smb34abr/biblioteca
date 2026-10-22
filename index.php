@@ -3,21 +3,22 @@ require 'includes/init.php'; need();
 $q = fn($sql) => (int)$pdo->query($sql)->fetchColumn();
 $stats = [
   'Títulos'           => $q('SELECT COUNT(*) FROM libros'),
-  'Ejemplares libres' => $q('SELECT COALESCE(SUM(disponibles),0) FROM libros'),
-  'Valor inventario'  => $pdo->query('SELECT COALESCE(SUM(precio * ejemplares),0) FROM libros')->fetchColumn(),
+  'Editoriales'       => $q('SELECT COUNT(*) FROM editoriales'),
+  'Escritores'        => $q('SELECT COUNT(*) FROM escritores'),
   'Socios'            => $q('SELECT COUNT(*) FROM socios'),
   'Préstamos activos' => $q('SELECT COUNT(*) FROM prestamos WHERE fecha_devolucion IS NULL'),
   'Vencidos'          => $q('SELECT COUNT(*) FROM prestamos WHERE fecha_devolucion IS NULL AND fecha_limite < CURDATE()'),
+  'Valor inventario'  => $pdo->query('SELECT COALESCE(SUM(precio * ejemplares),0) FROM libros')->fetchColumn(),
 ];
 $recientes = $pdo->query('SELECT p.*, l.titulo, s.nombre FROM prestamos p JOIN libros l ON l.id=p.libro_id JOIN socios s ON s.id=p.socio_id ORDER BY p.id DESC LIMIT 6')->fetchAll();
 head('Inicio'); ?>
 <section class="dashboard-intro"><div><p>RESUMEN GENERAL</p><h2>Tu biblioteca, de un vistazo</h2><span>Indicadores actuales del catálogo y la circulación.</span></div><div class="dashboard-actions"><a class="btn alt" href="libros.php">Ver catálogo</a><a class="btn" href="prestamos.php">Nuevo préstamo</a></div></section>
 <section class="dashboard-metrics" aria-label="Indicadores de la biblioteca">
-  <?php $metricIcons = ['Títulos'=>'libros','Ejemplares libres'=>'inicio','Valor inventario'=>'valor','Socios'=>'socios','Préstamos activos'=>'prestamos','Vencidos'=>'prestamos']; foreach ($stats as $k => $v): ?>
+  <?php $metricIcons = ['Títulos'=>'libros','Editoriales'=>'editoriales','Escritores'=>'escritores','Valor inventario'=>'valor','Socios'=>'socios','Préstamos activos'=>'prestamos','Vencidos'=>'prestamos']; foreach ($stats as $k => $v): ?>
     <article class="metric-card<?= $k === 'Vencidos' && $v ? ' metric-alert' : '' ?>">
       <div class="metric-top"><span><?= e($k) ?></span><span class="metric-icon"><?= nav_icon($metricIcons[$k]) ?></span></div>
       <strong><?= $k === 'Valor inventario' ? '$' . number_format((float)$v, 2) : number_format($v) ?></strong>
-      <small><?= $k === 'Valor inventario' ? 'MXN · ejemplares totales' : ($k === 'Vencidos' ? ($v ? 'Requieren seguimiento' : 'Sin retrasos pendientes') : 'Total registrado') ?></small>
+      <small><?= $k === 'Valor inventario' ? 'MXN · ejemplares totales' : (in_array($k, ['Editoriales', 'Escritores'], true) ? "$k registrados" : ($k === 'Vencidos' ? ($v ? 'Requieren seguimiento' : 'Sin retrasos pendientes') : 'Total registrado')) ?></small>
     </article>
   <?php endforeach; ?>
 </section>

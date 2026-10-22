@@ -7,6 +7,7 @@ function nav_icon($name) {
     'prestamos' => '<path d="M4 5h16M4 12h16M4 19h16"/><circle cx="7" cy="5" r="1"/><circle cx="7" cy="12" r="1"/><circle cx="7" cy="19" r="1"/>',
     'usuarios' => '<path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="10" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/>',
     'editoriales' => '<path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4"/><path d="M8 9v.01M8 12v.01M8 15v.01M8 18v.01M16 14v.01M16 17v.01"/>',
+    'escritores' => '<path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L8 18l-4 1 1-4z"/><path d="M15 5l4 4"/>',
     'valor' => '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10h18M7 15h3"/>',
   ];
   return '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">' . ($icons[$name] ?? '') . '</svg>';
@@ -15,8 +16,12 @@ function nav_icon($name) {
 function head($titulo) {
   need();
   $actual = basename($_SERVER["PHP_SELF"]);
-  $nav = ["index.php"=>["Inicio","inicio"],"libros.php"=>["Libros","libros"],"editoriales.php"=>["Editoriales","editoriales"],"socios.php"=>["Socios","socios"],"prestamos.php"=>["Préstamos","prestamos"]];
-  if (is_admin()) $nav["usuarios.php"] = ["Usuarios","usuarios"];
+  $nav = ["index.php"=>["Inicio","inicio"],"libros.php"=>["Libros","libros"],"socios.php"=>["Socios","socios"],"prestamos.php"=>["Préstamos","prestamos"]];
+  if (is_admin()) {
+    $nav["editoriales.php"] = ["Editoriales","editoriales"];
+    $nav["escritores.php"] = ["Escritores","escritores"];
+    $nav["usuarios.php"] = ["Usuarios","usuarios"];
+  }
   $msg = flash(); ?>
 <!DOCTYPE html>
 <html lang="es"><head>

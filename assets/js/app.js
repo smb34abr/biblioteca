@@ -27,3 +27,4 @@ if (menuToggle) {
     if (event.key === "Escape") setMenuOpen(false);
   });
 }
+
