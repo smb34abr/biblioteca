@@ -4,6 +4,7 @@ USE biblioteca;
 CREATE TABLE usuarios (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nombre VARCHAR(80) NOT NULL,
+  nombre_completo VARCHAR(150) NOT NULL,
   email VARCHAR(120) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
   rol ENUM('admin','bibliotecario') NOT NULL DEFAULT 'bibliotecario'

@@ -16,7 +16,7 @@ try {
 
 $username = $_SERVER['PHP_AUTH_USER'] ?? '';
 $password = $_SERVER['PHP_AUTH_PW'] ?? '';
-$auth = $pdo->prepare('SELECT id,nombre,email,rol,password_hash FROM usuarios WHERE email=?');
+$auth = $pdo->prepare('SELECT id,nombre_completo,email,rol,password_hash FROM usuarios WHERE email=?');
 $auth->execute([$username]);
 $user = $auth->fetch();
 if (!$user || !password_verify($password, $user['password_hash'])) {

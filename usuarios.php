@@ -4,15 +4,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   check();
   $id = (int)($_POST['id'] ?? 0);
   if (isset($_POST['crear'])) {
-    $nombre = trim($_POST['nombre'] ?? '');
+    $nombreCompleto = trim($_POST['nombre_completo'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $rol = $_POST['rol'] ?? '';
-    if (!$nombre || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 10 || !in_array($rol, ['admin', 'bibliotecario'], true)) {
-      flash('Revisa los datos. La contraseña debe tener al menos 10 caracteres.');
+    if (!$nombreCompleto || mb_strlen($nombreCompleto) > 150 || !filter_var($email, FILTER_VALIDATE_EMAIL) || strlen($password) < 10 || !in_array($rol, ['admin', 'bibliotecario'], true)) {
+      flash('Revisa los datos: escribe el nombre completo (máximo 150 caracteres), un correo válido y una contraseña de al menos 10 caracteres.');
     } else {
       try {
-        $pdo->prepare('INSERT INTO usuarios (nombre,email,password_hash,rol) VALUES (?,?,?,?)')->execute([$nombre, $email, password_hash($password, PASSWORD_DEFAULT), $rol]);
+        $pdo->prepare('INSERT INTO usuarios (nombre,nombre_completo,email,password_hash,rol) VALUES (?,?,?,?,?)')->execute([mb_substr($nombreCompleto, 0, 80), $nombreCompleto, $email, password_hash($password, PASSWORD_DEFAULT), $rol]);
         flash('Usuario creado.');
       } catch (PDOException $x) { flash('Ese correo ya está registrado.'); }
     }
@@ -31,20 +31,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   go('usuarios.php');
 }
-$usuarios = $pdo->query('SELECT id,nombre,email,rol FROM usuarios ORDER BY nombre')->fetchAll();
+$usuarios = $pdo->query('SELECT id,nombre_completo,email,rol FROM usuarios ORDER BY nombre_completo')->fetchAll();
 head('Usuarios'); ?>
 <form method="post" class="panel grid">
   <input type="hidden" name="t" value="<?= csrf() ?>">
-  <label>Nombre<input name="nombre" required></label>
+  <label>Nombre completo<input name="nombre_completo" maxlength="150" autocomplete="name" required></label>
   <label>Correo<input type="email" name="email" required></label>
   <label>Contraseña<input type="password" name="password" minlength="10" required></label>
   <label>Rol<select name="rol"><option value="bibliotecario">Bibliotecario</option><option value="admin">Admin</option></select></label>
   <div class="actions"><button class="btn" name="crear" value="1">Crear usuario</button></div>
 </form>
 <div class="wrap"><table>
-<tr><th>Nombre</th><th>Correo</th><th>Rol</th><th></th></tr>
-<?php foreach ($usuarios as $usuario): ?><tr><td><?= e($usuario['nombre']) ?><?= (int)$usuario['id'] === (int)$_SESSION['u']['id'] ? ' (tú)' : '' ?></td><td><?= e($usuario['email']) ?></td><td>
+<tr><th>Nombre completo</th><th>Correo</th><th>Rol</th><th></th></tr>
+<?php foreach ($usuarios as $usuario): ?><tr><td><?= e($usuario['nombre_completo']) ?><?= (int)$usuario['id'] === (int)$_SESSION['u']['id'] ? ' (tú)' : '' ?></td><td><?= e($usuario['email']) ?></td><td>
 <?php if ((int)$usuario['id'] !== (int)$_SESSION['u']['id']): ?><form method="post" class="row"><input type="hidden" name="t" value="<?= csrf() ?>"><input type="hidden" name="id" value="<?= $usuario['id'] ?>"><select name="rol"><option value="bibliotecario" <?= $usuario['rol'] === 'bibliotecario' ? 'selected' : '' ?>>Bibliotecario</option><option value="admin" <?= $usuario['rol'] === 'admin' ? 'selected' : '' ?>>Admin</option></select><button class="link" name="guardar_rol" value="1">Guardar</button></form><?php else: ?>Admin<?php endif; ?></td><td>
-<?php if ((int)$usuario['id'] !== (int)$_SESSION['u']['id']): ?><form method="post"><input type="hidden" name="t" value="<?= csrf() ?>"><input type="hidden" name="id" value="<?= $usuario['id'] ?>"><button class="link danger" name="eliminar" value="1" data-confirm="¿Eliminar a <?= e($usuario['nombre']) ?>?">Eliminar</button></form><?php endif; ?></td></tr><?php endforeach; ?>
+<?php if ((int)$usuario['id'] !== (int)$_SESSION['u']['id']): ?><form method="post"><input type="hidden" name="t" value="<?= csrf() ?>"><input type="hidden" name="id" value="<?= $usuario['id'] ?>"><button class="link danger" name="eliminar" value="1" data-confirm="¿Eliminar a <?= e($usuario['nombre_completo']) ?>?">Eliminar</button></form><?php endif; ?></td></tr><?php endforeach; ?>
 </table></div>
 <?php foot();

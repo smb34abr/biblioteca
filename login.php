@@ -2,8 +2,8 @@
 require 'includes/init.php';
 // Primer arranque: crea el administrador si no existe ninguno
 if (!$pdo->query('SELECT COUNT(*) FROM usuarios')->fetchColumn()) {
-  $pdo->prepare('INSERT INTO usuarios (nombre,email,password_hash,rol) VALUES (?,?,?,?)')
-      ->execute(['Administrador', 'admin@biblioteca.test', password_hash('admin123', PASSWORD_DEFAULT), 'admin']);
+  $pdo->prepare('INSERT INTO usuarios (nombre,nombre_completo,email,password_hash,rol) VALUES (?,?,?,?,?)')
+      ->execute(['Administrador', 'Administrador', 'admin@biblioteca.test', password_hash('admin123', PASSWORD_DEFAULT), 'admin']);
 }
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -12,7 +12,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $u = $s->fetch();
   if ($u && password_verify($_POST['password'], $u['password_hash'])) {
     session_regenerate_id(true);
-    $_SESSION['u'] = ['id' => $u['id'], 'nombre' => $u['nombre'], 'rol' => $u['rol']];
+    $_SESSION['u'] = ['id' => $u['id'], 'nombre' => $u['nombre_completo'], 'rol' => $u['rol']];
     go('index.php');
   }
   $error = 'Correo o contraseña incorrectos.';

@@ -17,11 +17,11 @@ function need() {
   if ($checked) return;
   global $pdo;
   if (empty($_SESSION["u"])) { header("Location: login.php"); exit; }
-  $s = $pdo->prepare('SELECT nombre,rol FROM usuarios WHERE id=?');
+  $s = $pdo->prepare('SELECT nombre_completo,rol FROM usuarios WHERE id=?');
   $s->execute([$_SESSION['u']['id']]);
   $user = $s->fetch();
   if (!$user) { $_SESSION = []; session_destroy(); header('Location: login.php'); exit; }
-  $_SESSION['u']['nombre'] = $user['nombre'];
+  $_SESSION['u']['nombre'] = $user['nombre_completo'];
   $_SESSION['u']['rol'] = $user['rol'];
   $checked = true;
 }
