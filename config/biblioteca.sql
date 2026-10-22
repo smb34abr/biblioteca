@@ -171,8 +171,7 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id`, `nombre`, `nombre_completo`, `email`, `password_hash`, `rol`) VALUES
-(1, 'bibliotecario', 'bibliotecario', 'admin@biblioteca.test', '$2y$10$keTVjh2DbvU6QeYH1uEQh.8q20.q8gNiI8zcfuiW83gXTyPcx6oa2', 'bibliotecario'),
-(2, 'abernal', 'Alberto Bernal', 'smb34abr@gmail.com', '$2y$10$Cxqy1MBg6MqZjQ6GLMoa5e0.HcWYvSg/oWxCwxIr1kLOelbwiAM1u', 'admin');
+(1, 'bibliotecario', 'bibliotecario', 'admin@biblioteca.test', '$2y$10$keTVjh2DbvU6QeYH1uEQh.8q20.q8gNiI8zcfuiW83gXTyPcx6oa2', 'admin');
 
 --
 -- Índices para tablas volcadas
