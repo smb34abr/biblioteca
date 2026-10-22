@@ -32,7 +32,13 @@ if (isset($_GET['edit'])) {
   $stmt->execute([(int)$_GET['edit']]);
   $edit = $stmt->fetch() ?: [];
 }
-$editoriales = $pdo->query('SELECT e.*,COUNT(l.id) AS libros FROM editoriales e LEFT JOIN libros l ON l.editorial_id=e.id GROUP BY e.id ORDER BY e.nombre')->fetchAll();
+$total = (int)$pdo->query('SELECT COUNT(*) FROM editoriales')->fetchColumn();
+$pg = page_info($total);
+$stmt = $pdo->prepare('SELECT e.*,COUNT(l.id) AS libros FROM editoriales e LEFT JOIN libros l ON l.editorial_id=e.id GROUP BY e.id ORDER BY e.nombre LIMIT ? OFFSET ?');
+$stmt->bindValue(1, 20, PDO::PARAM_INT);
+$stmt->bindValue(2, $pg['offset'], PDO::PARAM_INT);
+$stmt->execute();
+$editoriales = $stmt->fetchAll();
 head('Editoriales'); ?>
 <section class="panel editorial-panel">
   <div class="section-heading"><div><p class="eyebrow">CATÁLOGO</p><h2><?= $edit ? 'Editar editorial' : 'Agregar editorial' ?></h2></div></div>
@@ -43,9 +49,10 @@ head('Editoriales'); ?>
     <div class="actions"><button class="btn"><?= $edit ? 'Guardar cambios' : 'Agregar editorial' ?></button><?php if ($edit): ?><a href="editoriales.php">Cancelar</a><?php endif; ?></div>
   </form>
 </section>
-<div class="report-toolbar editorial-report-toolbar"><span><?= number_format(count($editoriales)) ?> editoriales encontradas</span><div class="report-actions"><a class="btn alt" href="exportar.php?tipo=editoriales&amp;formato=csv">Descargar CSV</a><a class="btn" href="exportar.php?tipo=editoriales&amp;formato=pdf" target="_blank" rel="noopener">Imprimir / Guardar como PDF</a></div></div>
+<div class="report-toolbar editorial-report-toolbar"><span><?= number_format($total) ?> editoriales encontradas</span><div class="report-actions"><a class="btn alt" href="exportar.php?tipo=editoriales&amp;formato=csv">Descargar CSV</a><a class="btn" href="exportar.php?tipo=editoriales&amp;formato=pdf" target="_blank" rel="noopener">Imprimir / Guardar como PDF</a></div></div>
 <?php if (!$editoriales): ?><p class="muted">Aún no hay editoriales registradas.</p><?php else: ?>
 <div class="wrap"><table><thead><tr><th>EDITORIAL</th><th>PAÍS</th><th>LIBROS ASOCIADOS</th><th></th></tr></thead><tbody>
 <?php foreach ($editoriales as $editorial): ?><tr><td><?= e($editorial['nombre']) ?></td><td><?= e($editorial['pais'] ?: '—') ?></td><td><?= (int)$editorial['libros'] ?></td><td class="row"><a href="?edit=<?= (int)$editorial['id'] ?>">Editar</a><form method="post"><input type="hidden" name="t" value="<?= csrf() ?>"><input type="hidden" name="id" value="<?= (int)$editorial['id'] ?>"><button class="link danger" name="eliminar" value="1" data-confirm="¿Eliminar la editorial <?= e($editorial['nombre']) ?>? Los libros asociados conservarán sus datos.">Eliminar</button></form></td></tr><?php endforeach; ?>
 </tbody></table></div><?php endif; ?>
+<?php page_links($pg); ?>
 <?php foot();

@@ -44,4 +44,4 @@ head('Socios'); ?>
 <td class="row"><?php if (is_admin()): ?><a href="?edit=<?= $s['id'] ?>">Editar</a>
 <form method="post"><input type="hidden" name="t" value="<?= csrf() ?>"><button class="link danger" name="del" value="<?= $s['id'] ?>" data-confirm="¿Eliminar a <?= e($s['nombre']) ?>?">Eliminar</button></form><?php endif; ?></td></tr>
 <?php endforeach; ?></table></div><?php endif; ?>
-<?php page_links($pg['page'], $pg['pages']); foot();
+<?php page_links($pg); foot();

@@ -30,5 +30,5 @@ head('Reportes'); ?>
 <div class="wrap"><table><thead><tr><th>TÍTULO</th><th>ESCRITOR</th><th>ISBN</th><th>EDITORIAL</th><th>CATEGORÍA</th><th>PRECIO</th><th>EJEMPLARES</th></tr></thead><tbody>
 <?php foreach ($libros as $libro): ?><tr><td><?= e($libro['titulo']) ?></td><td><?= e($libro['escritores']) ?></td><td><?= e($libro['isbn']) ?></td><td><?= e($libro['editorial'] ?: 'Sin editorial') ?></td><td><?= e($libro['categoria']) ?></td><td>$<?= number_format((float)$libro['precio'], 2) ?> MXN</td><td><?= (int)$libro['disponibles'] ?> / <?= (int)$libro['ejemplares'] ?></td></tr><?php endforeach; ?>
 </tbody></table></div>
-<?php page_links($paginacion['page'], $paginacion['pages']); ?>
-<?php endif; foot();
+<?php endif; ?>
+<?php page_links($paginacion); foot();

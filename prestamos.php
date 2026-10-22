@@ -44,4 +44,5 @@ head('Préstamos'); ?>
 <tr><td><?= e($p['titulo']) ?></td><td><?= e($p['nombre']) ?></td><td><?= e($p['fecha_prestamo']) ?></td><td><?= e($p['fecha_limite']) ?></td>
 <td><span class="tag <?= $est[0] ?>"><?= $est[1] ?></span></td><td>$<?= number_format((float)$p['multa'], 2) ?></td>
 <td><?php if (!$p['fecha_devolucion']): ?><form method="post"><input type="hidden" name="t" value="<?= csrf() ?>"><button class="link" name="devolver" value="<?= $p['id'] ?>">Registrar devolución</button></form><?php endif; ?></td></tr>
-<?php endforeach; ?></table></div><?php page_links($pg['page'], $pg['pages']); ?><?php endif; foot();
+<?php endforeach; ?></table></div><?php endif; ?>
+<?php page_links($pg); foot();

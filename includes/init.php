@@ -30,19 +30,26 @@ function require_admin() { need(); if (!is_admin()) { http_response_code(403); e
 function flash($m = null) { if ($m !== null) { $_SESSION["f"] = $m; return; } $x = $_SESSION["f"] ?? ""; unset($_SESSION["f"]); return $x; }
 function go($url) { header("Location: $url"); exit; }
 function page_info($total, $perPage = 20) {
+  $total = (int)$total;
   $pages = max(1, (int)ceil($total / $perPage));
   $page = min($pages, max(1, (int)($_GET["page"] ?? 1)));
-  return ["page" => $page, "pages" => $pages, "offset" => ($page - 1) * $perPage];
+  return ["page" => $page, "pages" => $pages, "offset" => ($page - 1) * $perPage, "total" => $total, "per_page" => $perPage];
 }
-function page_links($page, $pages) {
-  if ($pages < 2) return;
+function page_links($pagination) {
+  $page = $pagination["page"];
+  $pages = $pagination["pages"];
+  $total = $pagination["total"];
+  $from = $total ? $pagination["offset"] + 1 : 0;
+  $to = min($pagination["offset"] + $pagination["per_page"], $total);
+  echo '<div class="pagination-footer"><span class="pagination-summary">Mostrando del ' . number_format($from) . ' al ' . number_format($to) . ' de ' . number_format($total) . ' entradas</span>';
+  if ($pages < 2) { echo '</div>'; return; }
   echo '<nav class="pagination" aria-label="Paginación">';
   foreach ([[max(1, $page - 1), "Anterior"], [$page, "$page / $pages"], [min($pages, $page + 1), "Siguiente"]] as [$number, $label]) {
     $query = $_GET;
     $query["page"] = $number;
     echo '<a href="?' . e(http_build_query($query)) . '"' . ($number === $page ? ' aria-current="page"' : '') . '>' . e($label) . '</a>';
   }
-  echo '</nav>';
+  echo '</nav></div>';
 }
 
 require __DIR__ . "/layout.php";

@@ -87,4 +87,4 @@ head('Libros'); ?>
 <td class="row"><?php if (is_admin()): ?><a href="?edit=<?= $l['id'] ?>">Editar</a>
 <form method="post"><input type="hidden" name="t" value="<?= csrf() ?>"><button class="link danger" name="del" value="<?= $l['id'] ?>" data-confirm="¿Eliminar «<?= e($l['titulo']) ?>»?">Eliminar</button></form><?php endif; ?></td></tr>
 <?php endforeach; ?></table></div><?php endif; ?>
-<?php page_links($pg['page'], $pg['pages']); foot();
+<?php page_links($pg); foot();
