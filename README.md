@@ -57,3 +57,5 @@ database_upgrade_nombre_completo.sql
 assets/css  assets/js
 ```
 
+## Imagen del sitio
+![Captura del sitio](assets/img/sitio.png)
