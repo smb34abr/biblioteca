@@ -1,0 +1,4 @@
+USE biblioteca;
+
+ALTER TABLE libros
+  ADD COLUMN precio DECIMAL(10,2) NOT NULL DEFAULT 0.00 AFTER anio;

@@ -8,6 +8,7 @@ Aplicación web para administrar el catálogo, los socios y los préstamos de un
 - Inicio de sesión con contraseñas cifradas (`password_hash`) y sesión regenerada
 - Dashboard con indicadores y préstamos recientes
 - CRUD de libros (búsqueda por título, autor o ISBN) y de socios (filtro instantáneo)
+- Registro del precio de cada ejemplar y cálculo del valor total del inventario en el dashboard
 - Préstamos y devoluciones con control de disponibilidad en transacción
 - Detección de préstamos vencidos y multa configurable por día de retraso (`MULTA_POR_DIA`)
 - Roles `admin` y `bibliotecario`; administración de usuarios exclusiva del admin
@@ -25,7 +26,7 @@ Consultas preparadas (anti SQL injection), escape de salida con `htmlspecialchar
 4. Abre `http://localhost/biblioteca`
 5. Acceso demo: `admin@biblioteca.test` / `admin123` (se crea en el primer arranque; cámbiala).
 
-Si ya tienes la base de datos creada, ejecuta una vez `database_upgrade.sql` en phpMyAdmin para añadir roles y multas. En una instalación nueva, importa `database.sql`. El admin crea cuentas de bibliotecario y otros admins desde **Usuarios**. La multa inicial es de 5 por día vencido y se cambia en `config/db.php`.
+Si ya tienes la base de datos creada, ejecuta una vez `database_upgrade.sql` en phpMyAdmin para añadir roles y multas, y luego `database_upgrade_price.sql` para agregar el precio de los libros. Los precios existentes se inicializan en cero: actualízalos desde **Libros** para obtener el valor real del inventario. En una instalación nueva, importa `database.sql`. El admin crea cuentas de bibliotecario y otros admins desde **Usuarios**. La multa inicial es de 5 por día vencido y se cambia en `config/db.php`.
 
 ## Exportar
 En Libros, Socios y Préstamos puedes descargar como CSV todos los resultados que coincidan con la búsqueda actual. La opción de PDF abre una vista de impresión de esos resultados; elige **Guardar como PDF** en el diálogo de impresión del navegador.
@@ -48,6 +49,7 @@ includes/init.php    conexión PDO, sesión, helpers y CSRF
 includes/layout.php  cabecera y pie compartidos
 index.php  libros.php  socios.php  prestamos.php  login.php  logout.php
 usuarios.php  exportar.php  api/index.php  database.sql  database_upgrade.sql
+database_upgrade_price.sql
 assets/css  assets/js
 ```
 

@@ -16,6 +16,7 @@ CREATE TABLE libros (
   isbn VARCHAR(20) UNIQUE,
   categoria VARCHAR(60),
   anio SMALLINT,
+  precio DECIMAL(10,2) NOT NULL DEFAULT 0.00,
   ejemplares INT NOT NULL DEFAULT 1,
   disponibles INT NOT NULL DEFAULT 1,
   INDEX (titulo), INDEX (autor)
@@ -41,11 +42,11 @@ CREATE TABLE prestamos (
   FOREIGN KEY (socio_id) REFERENCES socios(id)
 ) ENGINE=InnoDB;
 
-INSERT INTO libros (titulo,autor,isbn,categoria,anio,ejemplares,disponibles) VALUES
-('Cien años de soledad','Gabriel García Márquez','9780307474728','Novela',1967,3,3),
-('El laberinto de la soledad','Octavio Paz','9786071611772','Ensayo',1950,2,2),
-('Pedro Páramo','Juan Rulfo','9788437604947','Novela',1955,2,2),
-('Clean Code','Robert C. Martin','9780132350884','Tecnología',2008,2,2);
+INSERT INTO libros (titulo,autor,isbn,categoria,anio,precio,ejemplares,disponibles) VALUES
+('Cien años de soledad','Gabriel García Márquez','9780307474728','Novela',1967,0.00,3,3),
+('El laberinto de la soledad','Octavio Paz','9786071611772','Ensayo',1950,0.00,2,2),
+('Pedro Páramo','Juan Rulfo','9788437604947','Novela',1955,0.00,2,2),
+('Clean Code','Robert C. Martin','9780132350884','Tecnología',2008,0.00,2,2);
 INSERT INTO socios (nombre,email,telefono) VALUES
 ('Ana Torres','ana@ejemplo.com','5512345678'),
 ('Luis Ramírez','luis@ejemplo.com','5587654321');
